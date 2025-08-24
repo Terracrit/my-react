@@ -1,22 +1,34 @@
-import logo from './logo.svg';
-import './App.css';
+import { useState } from "react";
+import "./App.css";
 
 function App() {
+  const [value, setValue] = useState("");
+  const [todos, setTodos] = useState([]);
+  const hendlerToDo = (e) => {
+    setValue(e.target.value);
+  };
+  const hendlerkey = (e) => {
+    if (e.key === "Enter") {
+      onClickhandl();
+    }
+  };
+  const onClickhandl = () => {
+    if (value.trim() !== "") {
+      setTodos([...todos, value]);
+      setValue("");
+    }
+  };
   return (
     <div className="App">
       <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
+        <input value={value} onChange={hendlerToDo} onKeyDown={hendlerkey} />
+        <button onClick={onClickhandl}>Add to do</button>
+        <p>{todos.length}</p>
+        <ul>
+          {todos.map((todo, index) => (
+            <li key={index}>{todo}</li>
+          ))}
+        </ul>
       </header>
     </div>
   );
