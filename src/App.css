@@ -23,7 +23,13 @@
   font-size: calc(10px + 2vmin);
   color: white;
 }
+.todo-name {
+  padding: 10px;
+}
 
+.completed {
+  text-decoration: line-through;
+}
 .App-link {
   color: #61dafb;
 }
