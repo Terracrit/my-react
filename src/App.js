@@ -2,14 +2,10 @@ import React, { useState } from "react";
 import axios from "axios";
 import { useGet } from "./hooks/useGet.js";
 import { useTodoFilters } from "./hooks/useTodoFilters.js";
-import { InputForm } from "./components/InputForm.js";
-import { Controls } from "./components/Controls.js";
-import ToDoList from "./components/ToDoList.js";
-import TodoForm from "./components/TodoForm.js";
 import { Loader } from "./components/Loader.js";
 import { ErrorMessage } from "./components/ErrorMessage.js";
-import { AddButton } from "./components/AddButton.js";
 import "./App.css";
+import { RoutesElement } from "./components/RoutesElement.js";
 
 const BASE_URL = "http://localhost:3030/";
 
@@ -57,13 +53,19 @@ function App() {
 
   const handleSaveTodo = async (updatedTodo) => {
     try {
-      await axios.put(`${BASE_URL}todos/${updatedTodo.id}`, updatedTodo);
-      setTodos(todos.map((t) => (t.id === updatedTodo.id ? updatedTodo : t)));
+      if (updatedTodo.id) {
+        await axios.put(`${BASE_URL}todos/${updatedTodo.id}`, updatedTodo);
+        setTodos(todos.map((t) => (t.id === updatedTodo.id ? updatedTodo : t)));
+      } else {
+        const response = await axios.post(`${BASE_URL}todos`, updatedTodo);
+        setTodos([...todos, response.data]);
+      }
       setEditingTodo(null);
       setShowForm(false);
     } catch (err) {
       console.error("Помилка при збереженні:", err);
     }
+    if (!handleSaveTodo) return;
   };
 
   const handleToggleComplete = async (id) => {
@@ -81,42 +83,18 @@ function App() {
         {isLoading && <Loader />}
         {error && <ErrorMessage message={error} />}
 
-        {!isLoading && todos && todos.length === 0 && !showForm && (
-          <>
-            <p>Наразі у вас немає ще завдань</p>
-            <AddButton onClick={() => setShowForm(true)} />
-          </>
-        )}
-
-        {showForm && (
-          <TodoForm
-            todo={editingTodo}
-            onSave={editingTodo ? handleSaveTodo : handleAddTodo}
-            onCancel={() => {
-              setShowForm(false);
-              setEditingTodo(null);
-            }}
-          />
-        )}
-
-        {todos && todos.length > 0 && (
-          <>
-            <InputForm onAddTodo={handleAddTodo} error={null} />
-            <Controls
-              search={searchQuery}
-              setSearch={setSearchQuery}
-              filter={filter}
-              setFilter={setFilter}
-              filteredCount={filteredAndSearchedTodos.length}
-            />
-            <ToDoList
-              todos={filteredAndSearchedTodos}
-              onDelete={handleDeleteTodo}
-              onToggleComplete={handleToggleComplete}
-              onEdit={handleEditTodo}
-            />
-          </>
-        )}
+        <RoutesElement
+          todos={todos}
+          handleSaveTodo={handleSaveTodo}
+          onDelete={handleDeleteTodo}
+          onToggleComplete={handleToggleComplete}
+          handleAddTodo={handleAddTodo}
+          searchQuery={searchQuery}
+          setSearchQuery={setSearchQuery}
+          filter={filter}
+          setFilter={setFilter}
+          filteredAndSearchedTodos={filteredAndSearchedTodos}
+        />
       </header>
     </div>
   );

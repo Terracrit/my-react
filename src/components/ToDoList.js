@@ -1,6 +1,5 @@
 import React from "react";
 import TodoItem from "./TodoItem";
-
 const ToDoList = ({ todos, onToggleComplete, onDelete, onEdit }) => {
   return (
     <ul className="todos-list">

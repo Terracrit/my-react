@@ -12,7 +12,7 @@ export const useTodoFilters = (todos) => {
         .toLowerCase()
         .includes(searchQuery.toLowerCase());
 
-      if (filter === "active") {
+      if (filter === "not_completed") {
         return matchesSearch && !todo.checked;
       } else if (filter === "completed") {
         return matchesSearch && todo.checked;

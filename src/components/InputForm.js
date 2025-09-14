@@ -1,18 +1,17 @@
 import React, { useState } from "react";
 
-export const InputForm = ({ onAddTodo, error }) => {
-  const [value, setValue] = useState("");
+export const InputForm = ({ onAddTodo }) => {
+  const [title, setTitle] = useState("");
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    if (value.trim()) {
+    if (title.trim()) {
       onAddTodo({
-        title: value,
-        description: "",
+        title: title,
         checked: false,
         creationDate: new Date().toISOString(),
       });
-      setValue("");
+      setTitle("");
     }
   };
 
@@ -20,12 +19,12 @@ export const InputForm = ({ onAddTodo, error }) => {
     <form onSubmit={handleSubmit}>
       <input
         type="text"
-        value={value}
-        onChange={(e) => setValue(e.target.value)}
-        placeholder="Додати нове завдання"
+        value={title}
+        onChange={(e) => setTitle(e.target.value)}
+        placeholder="Нове завдання..."
+        required
       />
       <button type="submit">Додати</button>
-      {error && <p className="error">{error}</p>}
     </form>
   );
 };
